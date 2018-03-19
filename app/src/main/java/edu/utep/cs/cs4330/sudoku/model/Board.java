@@ -214,4 +214,25 @@ public class Board {
         return true;
     }
 
+    /** Checks if user solution is similar to the real solution to determine if the puzzle is still solvable */
+    public boolean solvable(){
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                if((!(player[i][j] == board[i][j])) && player[i][j] > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /** Solve the Sudoku puzzle for the user */
+    public void solveForUser(){
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                player[i][j] = board[i][j];
+            }
+        }
+    }
+
 }

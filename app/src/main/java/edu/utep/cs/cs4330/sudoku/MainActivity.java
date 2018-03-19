@@ -82,6 +82,12 @@ public class MainActivity extends AppCompatActivity {
             numberButtons.add(button);
             setButtonWidth(button);
         }
+        if (board.size == 4){
+            for (int i = 5; i < numberIds.length; i++) {
+                View button = findViewById(numberIds[i]);
+                button.setEnabled(false);
+            }
+        }
         hint = new ArrayList<>();
         for(int i = 0; i < board.size; i++){
             for(int j = 0; j < board.size; j++){
