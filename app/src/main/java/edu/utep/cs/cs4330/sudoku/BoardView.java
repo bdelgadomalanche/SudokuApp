@@ -37,7 +37,7 @@ public class BoardView extends View {
     private final List<SelectionListener> listeners = new ArrayList<>();
 
     /** Number of squares in rows and columns.*/
-    private int boardSize = 9;
+    private int boardSize;
 
     /** Board to be displayed by this view. */
     private Board board;
@@ -119,7 +119,7 @@ public class BoardView extends View {
             }
         }
         if(selected[0] >= 0 && selected[1] >= 0 && !isHint) {
-            canvas.drawRect((selected[0] * (maxCoord / 9)), (selected[1] * (maxCoord / 9)), (selected[0] * (maxCoord / 9)) + maxCoord / 9, (selected[1] * (maxCoord / 9)) + maxCoord / 9, boardPaint);
+            canvas.drawRect((selected[0] * (maxCoord / boardSize)), (selected[1] * (maxCoord / boardSize)), (selected[0] * (maxCoord / boardSize)) + maxCoord / boardSize, (selected[1] * (maxCoord / boardSize)) + maxCoord / boardSize, boardPaint);
         }
 
         // WRITE YOUR CODE HERE ...
@@ -127,8 +127,8 @@ public class BoardView extends View {
         boardPaint.setColor(Color.BLACK);
         boardPaint.setStrokeWidth(3);
         boardPaint.setStyle(Paint.Style.STROKE);
-        for(float i = 0; i < (maxCoord + (maxCoord / 9)); i = i + (maxCoord / 9)){
-            if(i == maxCoord / 3 || i == 2*(maxCoord / 3)){
+        for(float i = 0; i < (maxCoord + (maxCoord / boardSize)); i = i + (maxCoord / boardSize)){
+            if(i == maxCoord / ((int)Math.sqrt(boardSize)) || i == 2*(maxCoord / ((int)Math.sqrt(boardSize)))){
                 boardPaint.setStrokeWidth(6);
                 canvas.drawLine(0, i, maxCoord, i, boardPaint);
                 boardPaint.setStrokeWidth(3);
@@ -137,8 +137,8 @@ public class BoardView extends View {
                 canvas.drawLine(0, i, maxCoord, i, boardPaint);
             }
         }
-        for(float i = 0; i < (maxCoord + (maxCoord / 9)); i = i + (maxCoord / 9)){
-            if(i == maxCoord / 3 || i == 2*(maxCoord / 3)){
+        for(float i = 0; i < (maxCoord + (maxCoord / boardSize)); i = i + (maxCoord / boardSize)){
+            if(i == maxCoord / ((int)Math.sqrt(boardSize)) || i == 2*(maxCoord / ((int)Math.sqrt(boardSize)))){
                 boardPaint.setStrokeWidth(6);
                 canvas.drawLine(i, 0, i, maxCoord, boardPaint);
                 boardPaint.setStrokeWidth(3);
@@ -158,8 +158,8 @@ public class BoardView extends View {
         boardPaint.setColor(Color.BLACK);
         boardPaint.setTextSize(60);
         boardPaint.setStyle(Paint.Style.FILL);
-        float x = ((maxCoord/9)/2) - 30;
-        float y = ((maxCoord/9)/2) + 20;
+        float x = ((maxCoord/boardSize)/2) - 30;
+        float y = ((maxCoord/boardSize)/2) + 20;
 
         for(int i = 0; i < board.player.length; i++){
             for(int j = 0; j < board.player[i].length; j++){
@@ -173,10 +173,10 @@ public class BoardView extends View {
                     canvas.drawText(String.valueOf(board.player[i][j]), x, y, boardPaint);
                 }
                 boardPaint.setStyle(Paint.Style.FILL);
-                x += (maxCoord/9);
+                x += (maxCoord/boardSize);
             }
-            x = ((maxCoord/9)/2) - 30;
-            y += (maxCoord/9);
+            x = ((maxCoord/boardSize)/2) - 30;
+            y += (maxCoord/boardSize);
         }
         boardPaint.setColor(boardColor);
     }

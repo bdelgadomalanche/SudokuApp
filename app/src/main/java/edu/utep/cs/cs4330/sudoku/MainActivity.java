@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        board = new Board(9);
+        board = new Board(4, 1);
         boardView = findViewById(R.id.boardView);
         boardView.setBoard(board);
         boardView.addSelectionListener(this::squareSelected);
@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
             setButtonWidth(button);
         }
         hint = new ArrayList<>();
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
+        for(int i = 0; i < board.size; i++){
+            for(int j = 0; j < board.size; j++){
                 if(board.player[i][j] > 0) {
                     int[] temp = {i, j};
                     hint.add(temp);

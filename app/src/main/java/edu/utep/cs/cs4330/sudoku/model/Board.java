@@ -10,8 +10,11 @@ import java.util.Random;
  */
 public class Board {
 
+    /** Difficulty modifier. */
+    public int difficulty;
+
     /** Size of this board (number of columns/rows). */
-    public final int size;
+    public int size;
 
     /** Value Randomizer */
     private Random rand = new Random();
@@ -26,13 +29,14 @@ public class Board {
     public int[][] player;
 
     /** Create a new board of the given size. */
-    public Board(int size) {
+    public Board(int size, int difficulty) {
         this.size = size;
+        this.difficulty = difficulty;
         // WRITE YOUR CODE HERE ...
         board = new int[size][size];
         int currentPos = 0;
 
-        while(currentPos < 81){
+        while(currentPos < (size * size)){
             if(currentPos == 0){
                 clearGrid(board);
             }
@@ -42,8 +46,8 @@ public class Board {
                 int number = Available.get(currentPos).get(i);
 
                 if(!checkConflict(board, currentPos, number)){
-                    int xPos = currentPos % 9;
-                    int yPos = currentPos / 9;
+                    int xPos = currentPos % size;
+                    int yPos = currentPos / size;
 
                     board[xPos][yPos] = number;
 
@@ -57,7 +61,7 @@ public class Board {
 
             }
             else{
-                for(int i = 1; i <= 9; i++){
+                for(int i = 1; i <= size; i++){
                     Available.get(currentPos).add(i);
                 }
                 currentPos--;
@@ -77,8 +81,8 @@ public class Board {
 
     /** Calls other helper methods to check conflicts with other sections in the puzzle for board generation */
     private boolean checkConflict(int[][] board, int currentPos , int number){
-        int x = currentPos % 9;
-        int y = currentPos / 9;
+        int x = currentPos % size;
+        int y = currentPos / size;
 
         if(checkHor(board, x, y, number) || checkVer(board, x, y, number) || checkArea(board, x, y, number) ){
             return true;
@@ -120,11 +124,11 @@ public class Board {
 
     /** Checks conflicts with other numbers in the same square area */
     private boolean checkArea(int[][] board, int x, int y, int number){
-        int xRegion = x / 3;
-        int yRegion = y / 3;
+        int xRegion = x / (int)Math.sqrt(size);
+        int yRegion = y / (int)Math.sqrt(size);
 
-        for(int i = xRegion * 3 ; i < xRegion * 3 + 3 ; i++){
-            for(int j = yRegion * 3 ; j < yRegion * 3 + 3 ; j++){
+        for(int i = xRegion * (int)Math.sqrt(size) ; i < xRegion * (int)Math.sqrt(size) + (int)Math.sqrt(size); i++){
+            for(int j = yRegion * (int)Math.sqrt(size) ; j < yRegion * (int)Math.sqrt(size) + (int)Math.sqrt(size); j++){
                 if ((i != x || j != y) && number == board[i][j]) {
                     return true;
                 }
@@ -138,15 +142,15 @@ public class Board {
     private void clearGrid(int[][] board){
         Available.clear();
 
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
                 board[j][i] = -1;
             }
         }
 
-        for(int i = 0; i < 81; i++){
+        for(int i = 0; i < (size*size); i++){
             Available.add(new ArrayList<Integer>());
-            for(int j = 1; j <= 9; j++){
+            for(int j = 1; j <= size; j++){
                 Available.get(i).add(j);
             }
         }
@@ -155,10 +159,22 @@ public class Board {
     /** Removes elements from the player board so the board does not display the complete solution */
     public int[][] removeElements(int[][] board){
         int i = 0;
+        int toRemove = 50;
 
-        while(i < 50){
-            int x = rand.nextInt(9);
-            int y = rand.nextInt(9);
+        if (difficulty == 1){
+            toRemove = (int)(Math.pow(size, 2) * .6);
+        }
+        else if (difficulty == 2){
+            toRemove = (int)(Math.pow(size, 2) * .7);
+        }
+        else if (difficulty == 3){
+            toRemove = (int)(Math.pow(size, 2) * .8);
+        }
+
+
+        while(i < toRemove){
+            int x = rand.nextInt(size);
+            int y = rand.nextInt(size);
 
             if(board[x][y] != 0){
                 board[x][y] = 0;
@@ -188,8 +204,8 @@ public class Board {
 
     /** Checks for win by comparing all elements from the solution array to the player array */
     public boolean puzzleSolved(){
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
                 if(!(player[i][j] == board[i][j])) {
                     return false;
                 }
