@@ -54,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
     /** Unmodifiable spaces */
     private ArrayList<int[]> hint;
 
+    /** Size variable */
+    int size = 9;
+
+    /** Size variable */
+    int difficulty = 1;
+
     /** Sounds for the game */
     SoundPool effects;
     int win;
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        board = new Board(4, 1);
+        board = new Board(size, difficulty);
         boardView = findViewById(R.id.boardView);
         boardView.setBoard(board);
         boardView.addSelectionListener(this::squareSelected);
