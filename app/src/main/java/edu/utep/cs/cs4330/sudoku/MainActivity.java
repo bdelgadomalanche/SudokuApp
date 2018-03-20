@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private List<View> numberButtons;
     private static final int[] numberIds = new int[] {
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4,
-            R.id.n5, R.id.n6, R.id.n7, R.id.n8, R.id.n9
+            R.id.n5, R.id.n6, R.id.n7, R.id.n8, R.id.n9,
+            R.id.n10, R.id.n11
     };
 
     /** Array to remember where to insert number */
@@ -82,12 +83,25 @@ public class MainActivity extends AppCompatActivity {
 
         numberButtons = new ArrayList<>(numberIds.length);
         for (int i = 0; i < numberIds.length; i++) {
-            final int number = i; // 0 for delete button
-            View button = findViewById(numberIds[i]);
-            button.setOnClickListener(e -> numberClicked(number));
-            numberButtons.add(button);
-            setButtonWidth(button);
+            if(i <= 9) {
+                final int number = i; // 0 for delete button
+                View button = findViewById(numberIds[i]);
+                button.setOnClickListener(e -> numberClicked(number));
+                numberButtons.add(button);
+                setButtonWidth(button);
+            }
+            else if (i == 10){
+                View button = findViewById(numberIds[i]);
+                button.setOnClickListener(e -> solveClicked());
+                numberButtons.add(button);
+            }
+            else{
+                View button = findViewById(numberIds[i]);
+                button.setOnClickListener(e -> isSolvable());
+                numberButtons.add(button);
+            }
         }
+
         if (board.size == 4){
             for (int i = 5; i < numberIds.length; i++) {
                 View button = findViewById(numberIds[i]);
@@ -170,6 +184,40 @@ public class MainActivity extends AppCompatActivity {
                 boardView.postInvalidate();
                 toast("Item removed");
             }
+        }
+    }
+
+    /** Solve for the user button logic */
+    public void solveClicked() {
+        effects.play(place, 1, 1, 1, 0, 1);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage("Do you give up?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        board.solveForUser();
+                        boardView.postInvalidate();
+                        for (int i = 0; i < numberIds.length; i++) {
+                            View button = findViewById(numberIds[i]);
+                            button.setEnabled(false);
+                        }
+                        toast("Here is the solution!");
+                    }
+                })
+                .setNegativeButton("No", null);
+        AlertDialog warning = builder.create();
+        warning.show();
+    }
+
+    /** Check if the player's solution is still solvable */
+    public void isSolvable() {
+        effects.play(place, 1, 1, 1, 0, 1);
+        boolean isIt = board.solvable();
+        if(isIt){
+            toast("Don't worry, you're on the right path!");
+        }
+        else{
+            toast("Something must have gone wrong, you should go back and check.");
         }
     }
 
