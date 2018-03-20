@@ -289,18 +289,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         /* The same can be done to the onNothingSelected callback */
         switch(parent.getId()) {
             case R.id.spinner_difficulty:
-                // Do stuff for spinner1
+                // 1 for difficulty spinner
                 difficulty = position + 1;
-                toast("Spinner1: position=" + position + ", Value= " + size + ", d = " + difficulty);
-
-
+                board.difficulty = this.difficulty;
                 break;
+
             case R.id.spinner_size:
-            //  Do stuff for spinner2
+            //  Do stuff for board size spinner
                 size = (position * 5) + 4;
-                toast("In switch-statement for spinner2. Value=" + parent.getItemAtPosition(position));
+                board.size = this.size;
                 break;
         }
+        toast("Spinner1: position=" + position + ", size= " + size + "x" + size + ", d = " + difficulty);
 
     }
 
