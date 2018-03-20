@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ import edu.utep.cs.cs4330.sudoku.model.Board;
  *
  * @author Yoonsik Cheon
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Board board;
 
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<int[]> hint;
 
     /** Size variable */
-    int size = 9;
+    int size = 4;
 
     /** Size variable */
     int difficulty = 1;
@@ -124,6 +127,19 @@ public class MainActivity extends AppCompatActivity {
         error = effects.load(this, R.raw.incorrect, 1);
         place = effects.load(this, R.raw.boop, 1);
         restart = effects.load(this, R.raw.pageflip, 1);
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinner_difficulty);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.difficulty_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(this);
+
     }
 
     /** Callback to be invoked when the new button is tapped. */
@@ -257,5 +273,16 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = buttonWidth;
         view.setLayoutParams(params);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String sSelected=parent.getItemAtPosition(position).toString();
+        Toast.makeText(this,sSelected,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
