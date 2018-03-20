@@ -273,6 +273,7 @@ public class BoardView extends View {
         }
     }
 
+    /** Method that sets the hint(or given numbers) given to the user */
     public void setHint(ArrayList list) {
         hint = new ArrayList<>(list);
     }
