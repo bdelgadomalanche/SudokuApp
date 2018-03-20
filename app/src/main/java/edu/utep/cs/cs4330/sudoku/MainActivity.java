@@ -290,7 +290,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.spinner_difficulty:
                 // 1 for difficulty spinner
                 difficulty = position + 1;
-                board.difficulty = this.difficulty;
+                //board.difficulty = this.difficulty;
+                board = new Board(size, difficulty);
+                boardView = findViewById(R.id.boardView);
+                boardView.setBoard(board);
+                boardView.addSelectionListener(this::squareSelected);
+
+                numberButtons = new ArrayList<>(numberIds.length);
+                for (int i = 0; i < numberIds.length; i++) {
+                    if(i <= 9) {
+                        final int number = i; // 0 for delete button
+                        View button = findViewById(numberIds[i]);
+                        button.setOnClickListener(e -> numberClicked(number));
+                        numberButtons.add(button);
+                        setButtonWidth(button);
+                    }
+                    else if (i == 10){
+                        View button = findViewById(numberIds[i]);
+                        button.setOnClickListener(e -> solveClicked());
+                        numberButtons.add(button);
+                    }
+                    else{
+                        View button = findViewById(numberIds[i]);
+                        button.setOnClickListener(e -> isSolvable());
+                        numberButtons.add(button);
+                    }
+                }
+
+                if (board.size == 4){
+                    for (int i = 5; i < numberIds.length; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(false);
+                    }
+                }
+                hint = new ArrayList<>();
+                for(int i = 0; i < board.size; i++){
+                    for(int j = 0; j < board.size; j++){
+                        if(board.player[i][j] > 0) {
+                            int[] temp = {i, j};
+                            hint.add(temp);
+                        }
+                    }
+                }
+                boardView.setHint(hint);
                 break;
 
             case R.id.spinner_size:
