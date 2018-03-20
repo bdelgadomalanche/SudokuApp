@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">Sudoku</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_level">Level of difficulty</string>
+    <string-array name="pref_example_list_titles">
+        <item>1 (Easy)</item>
+        <item>2 (Medium)</item>
+        <item>3 (Hard)</item>
+    </string-array>
+    <integer-array name="pref_example_list_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+
+    <string name="pref_title_size">Size of board</string>
+    <string-array name="pref_example_list_sizes">
+        <item>4 x 4</item>
+        <item>9 x 9</item>
+    </string-array>
+    <integer-array name="pref_example_list_valueSizes">
+        <item>4</item>
+        <item>9</item>
+    </integer-array>
+
 </resources>
