@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /** Size variable */
     int difficulty = 1;
 
+    /** Spinners for selecting game difficulty and board size **/
+    Spinner spinner_difficult, spinner_board_size;
+
     /** Sounds for the game */
     SoundPool effects;
     int win;
@@ -128,18 +131,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         place = effects.load(this, R.raw.boop, 1);
         restart = effects.load(this, R.raw.pageflip, 1);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner_difficulty);
+        spinner_difficult = (Spinner) findViewById(R.id.spinner_difficulty);
+        spinner_board_size = (Spinner) findViewById(R.id.spinner_size);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.difficulty_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,R.array.board_size_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(this);
-
+        spinner_difficult.setAdapter(adapter);
+        spinner_difficult.setOnItemSelectedListener(this);
+        spinner_board_size.setAdapter(adapter2);
+        spinner_board_size.setOnItemSelectedListener(this);
     }
 
     /** Callback to be invoked when the new button is tapped. */
@@ -275,14 +281,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         view.setLayoutParams(params);
     }
 
+
+    /** Spinner Callbacks */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String sSelected=parent.getItemAtPosition(position).toString();
-        Toast.makeText(this,sSelected,Toast.LENGTH_SHORT).show();
+        /* Use the following switch-statement if you want to keep all spinner actions/callbacks together */
+        /* The same can be done to the onNothingSelected callback */
+        switch(parent.getId()) {
+            case R.id.spinner_difficulty:
+                // Do stuff for spinner1
+                difficulty = position + 1;
+                toast("Spinner1: position=" + position + ", Value= " + size + ", d = " + difficulty);
+
+
+                break;
+            case R.id.spinner_size:
+            //  Do stuff for spinner2
+                size = (position * 5) + 4;
+                toast("In switch-statement for spinner2. Value=" + parent.getItemAtPosition(position));
+                break;
+        }
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        Toast.makeText(this, "You selected nothing", Toast.LENGTH_LONG).show();
     }
+
 }
