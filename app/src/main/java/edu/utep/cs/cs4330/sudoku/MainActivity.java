@@ -150,8 +150,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     /** Callback to be invoked when the new button is tapped. */
     public void newClicked(View view) {
-        // WRITE YOUR CODE HERE ...
-        //
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Are you sure you want to start a new game?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
