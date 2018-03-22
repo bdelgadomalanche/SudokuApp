@@ -102,7 +102,7 @@ public class Board {
 
     /** Checks conflicts with other horizontal numbers */
     private boolean checkHor(int[][] board, int x, int y, int number){
-        for( int i = x - 1; i >= 0 ; i--){
+        for( int i = size - 1; i >= 0 ; i--){
             if(number == board[i][y]){
                 return true;
             }
@@ -113,7 +113,7 @@ public class Board {
 
     /** Checks conflicts with other vertical numbers */
     private boolean checkVer(int[][] board, int x, int y, int number){
-        for( int i = y - 1; i >= 0 ; i--){
+        for( int i = size - 1; i >= 0 ; i--){
             if(number == board[x][i]){
                 return true;
             }
