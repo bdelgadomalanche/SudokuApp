@@ -318,13 +318,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 if (board.size == 4){
+                    for (int i = 0; i < 5; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(true);
+                    }
                     for (int i = 5; i < 10; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(false);
                     }
+                    for (int i = 10; i < 12; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(true);
+                    }
                 }
                 else{
-                    for (int i = 5; i < 10; i++) {
+                    for (int i = 0; i < numberIds.length; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(true);
                     }
@@ -374,13 +382,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 if (board.size == 4){
+                    for (int i = 0; i < 5; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(true);
+                    }
                     for (int i = 5; i < 10; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(false);
                     }
+                    for (int i = 10; i < 12; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(true);
+                    }
                 }
                 else{
-                    for (int i = 5; i < 10; i++) {
+                    for (int i = 0; i < numberIds.length; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(true);
                     }
