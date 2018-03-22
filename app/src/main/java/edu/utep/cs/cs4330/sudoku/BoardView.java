@@ -128,13 +128,25 @@ public class BoardView extends View {
         boardPaint.setStrokeWidth(3);
         boardPaint.setStyle(Paint.Style.STROKE);
         for(float i = 0; i < (maxCoord + (maxCoord / boardSize)); i = i + (maxCoord / boardSize)){
-            if(i == maxCoord / ((int)Math.sqrt(boardSize)) || i == 2*(maxCoord / ((int)Math.sqrt(boardSize)))){
-                boardPaint.setStrokeWidth(6);
-                canvas.drawLine(0, i, maxCoord, i, boardPaint);
-                boardPaint.setStrokeWidth(3);
+            if(boardSize == 9) {
+                if (i == maxCoord / ((int) Math.sqrt(boardSize)) || i == 2 * (maxCoord / ((int) Math.sqrt(boardSize)))) {
+                    boardPaint.setStrokeWidth(6);
+                    canvas.drawLine(0, i, maxCoord, i, boardPaint);
+                    boardPaint.setStrokeWidth(3);
+                }
+                else{
+                    canvas.drawLine(0, i, maxCoord, i, boardPaint);
+                }
             }
-            else{
-                canvas.drawLine(0, i, maxCoord, i, boardPaint);
+            else if(boardSize == 4) {
+                if (i == maxCoord / ((int) Math.sqrt(boardSize))) {
+                    boardPaint.setStrokeWidth(6);
+                    canvas.drawLine(0, i, maxCoord, i, boardPaint);
+                    boardPaint.setStrokeWidth(3);
+                }
+                else{
+                    canvas.drawLine(0, i, maxCoord, i, boardPaint);
+                }
             }
         }
         for(float i = 0; i < (maxCoord + (maxCoord / boardSize)); i = i + (maxCoord / boardSize)){
