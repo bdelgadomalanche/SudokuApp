@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ArrayList<int[]> hint;
 
     /** Size variable */
-    int size = 4;
+    int size = 9;
 
     /** Size variable */
     int difficulty = 1;
@@ -108,12 +108,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
-        if (board.size == 4){
+        /**if (board.size == 4){
             for (int i = 5; i < numberIds.length; i++) {
                 View button = findViewById(numberIds[i]);
                 button.setEnabled(false);
             }
-        }
+        }*/
         hint = new ArrayList<>();
         for(int i = 0; i < board.size; i++){
             for(int j = 0; j < board.size; j++){
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return;
             }
         }
-        toast(String.format("Square selected: (%d, %d)", x, y));
+        //toast(String.format("Square selected: (%d, %d)", x, y));
         selected[0] = y;
         selected[1] = x;
     }
@@ -318,11 +318,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
 
                 if (board.size == 4){
-                    for (int i = 5; i < numberIds.length; i++) {
+                    for (int i = 5; i < 10; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(false);
                     }
                 }
+                else{
+                    for (int i = 5; i < 10; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(true);
+                    }
+                }
+
                 hint = new ArrayList<>();
                 for(int i = 0; i < board.size; i++){
                     for(int j = 0; j < board.size; j++){
@@ -333,15 +340,66 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
                 boardView.setHint(hint);
+                boardView.postInvalidate();
                 break;
 
             case R.id.spinner_size:
             //  Do stuff for board size spinner
                 size = (position * 5) + 4;
-                board.size = this.size;
+                //board.size = this.size;
+                board = new Board(size, difficulty);
+                boardView = findViewById(R.id.boardView);
+                boardView.setBoard(board);
+                boardView.addSelectionListener(this::squareSelected);
+
+                numberButtons = new ArrayList<>(numberIds.length);
+                for (int i = 0; i < numberIds.length; i++) {
+                    if(i <= 9) {
+                        final int number = i; // 0 for delete button
+                        View button = findViewById(numberIds[i]);
+                        button.setOnClickListener(e -> numberClicked(number));
+                        numberButtons.add(button);
+                        setButtonWidth(button);
+                    }
+                    else if (i == 10){
+                        View button = findViewById(numberIds[i]);
+                        button.setOnClickListener(e -> solveClicked());
+                        numberButtons.add(button);
+                    }
+                    else{
+                        View button = findViewById(numberIds[i]);
+                        button.setOnClickListener(e -> isSolvable());
+                        numberButtons.add(button);
+                    }
+                }
+
+                if (board.size == 4){
+                    for (int i = 5; i < 10; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(false);
+                    }
+                }
+                else{
+                    for (int i = 5; i < 10; i++) {
+                        View button = findViewById(numberIds[i]);
+                        button.setEnabled(true);
+                    }
+                }
+
+                hint = new ArrayList<>();
+                for(int i = 0; i < board.size; i++){
+                    for(int j = 0; j < board.size; j++){
+                        if(board.player[i][j] > 0) {
+                            int[] temp = {i, j};
+                            hint.add(temp);
+                        }
+                    }
+                }
+                boardView.setHint(hint);
+                boardView.postInvalidate();
                 break;
         }
-        toast("Spinner1: position=" + position + ", size= " + size + "x" + size + ", d = " + difficulty);
+        //toast("Spinner1: position=" + position + ", size= " + size + "x" + size + ", d = " + difficulty);
 
     }
 
