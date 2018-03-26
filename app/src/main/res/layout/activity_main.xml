@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context="edu.utep.cs.cs4330.sudoku.MainActivity">
 
-    <include
-        layout = "@layout/action_bar"
-        android:id = "@+id/action_bar">
-        </include>
-
     <Button
         android:id="@+id/new_button"
         android:layout_width="wrap_content"

@@ -214,7 +214,7 @@ public class Board {
         return true;
     }
 
-    /** Checks if user solution is similar to the real solution to determine if the puzzle is still solvable **/
+    /** Checks if user solution is similar to the real solution to determine if the puzzle is still solvable */
     public boolean solvable(){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
@@ -234,28 +234,5 @@ public class Board {
             }
         }
     }
-
-
-/*    public boolean solveForUser() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (player[i][j] != 0) {
-                    continue;
-                }
-                for (int num = 1; num <= size; num++) {
-                    if (checkConflict(player, i, j, num)) {
-                        player[i][j] = num;
-                        if (solvable()) {
-                            return true;
-                        } else {
-                            player[i][j] = 0;
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-        return true;
-    }*/
 
 }

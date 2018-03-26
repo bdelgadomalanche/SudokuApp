@@ -1,16 +1,11 @@
 package edu.utep.cs.cs4330.sudoku;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -86,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        setSupportActionBar(toolbar);
 
         board = new Board(size, difficulty);
         boardView = findViewById(R.id.boardView);
@@ -153,29 +146,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner_difficult.setOnItemSelectedListener(this);
         spinner_board_size.setAdapter(adapter2);
         spinner_board_size.setOnItemSelectedListener(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Actions when Toolbar option is selected
-        switch(item.getItemId()) {
-            case R.id.action_settings:
-                //TODO: call settings activity
-                toast("Settings clicked");
-                Intent settings = new Intent(this, SettingsFragment.class);
-                startActivity(settings);
-                break;
-
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /** Callback to be invoked when the new button is tapped. */
