@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int[] numberIds = new int[] {
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4,
             R.id.n5, R.id.n6, R.id.n7, R.id.n8, R.id.n9,
-            R.id.n10, R.id.n11
     };
 
     /** Array to remember where to insert number */
@@ -103,16 +102,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 button.setOnClickListener(e -> numberClicked(number));
                 numberButtons.add(button);
                 setButtonWidth(button);
-            }
-            else if (i == 10){
-                View button = findViewById(numberIds[i]);
-                button.setOnClickListener(e -> solveClicked());
-                numberButtons.add(button);
-            }
-            else{
-                View button = findViewById(numberIds[i]);
-                button.setOnClickListener(e -> isSolvable());
-                numberButtons.add(button);
             }
         }
 
@@ -271,27 +260,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    /** Solve for the user button logic */
-    public void solveClicked() {
-        effects.play(place, 1, 1, 1, 0, 1);
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("Do you give up?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        board.solveForUser(true);
-                        boardView.postInvalidate();
-                        for (int i = 0; i < numberIds.length; i++) {
-                            View button = findViewById(numberIds[i]);
-                            button.setEnabled(false);
-                        }
-                        toast("Here is the solution!");
-                    }
-                })
-                .setNegativeButton("No", null);
-        AlertDialog warning = builder.create();
-        warning.show();
-    }
+
 
     /** Check if the player's solution is still solvable */
     public void isSolvable() {
@@ -344,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     //TODO: remove Solve and check buttons
+    //TODO: Remove Spinners and add Settings
     /** Spinner Callbacks */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -368,16 +338,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         numberButtons.add(button);
                         setButtonWidth(button);
                     }
-                    else if (i == 10){
-                        View button = findViewById(numberIds[i]);
-                        button.setOnClickListener(e -> solveClicked());
-                        numberButtons.add(button);
-                    }
-                    else{
-                        View button = findViewById(numberIds[i]);
-                        button.setOnClickListener(e -> isSolvable());
-                        numberButtons.add(button);
-                    }
                 }
 
                 if (board.size == 4){
@@ -388,10 +348,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     for (int i = 5; i < 10; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(false);
-                    }
-                    for (int i = 10; i < 12; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(true);
                     }
                 }
                 else{
@@ -432,16 +388,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         numberButtons.add(button);
                         setButtonWidth(button);
                     }
-                    else if (i == 10){
-                        View button = findViewById(numberIds[i]);
-                        button.setOnClickListener(e -> solveClicked());
-                        numberButtons.add(button);
-                    }
-                    else{
-                        View button = findViewById(numberIds[i]);
-                        button.setOnClickListener(e -> isSolvable());
-                        numberButtons.add(button);
-                    }
                 }
 
                 if (board.size == 4){
@@ -452,10 +398,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     for (int i = 5; i < 10; i++) {
                         View button = findViewById(numberIds[i]);
                         button.setEnabled(false);
-                    }
-                    for (int i = 10; i < 12; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(true);
                     }
                 }
                 else{
