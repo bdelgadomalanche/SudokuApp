@@ -32,15 +32,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="248" column="45" lean-forward="false" selection-start-line="248" selection-start-column="45" selection-end-line="248" selection-end-column="45" />
+            <state relative-caret-position="1797">
+              <caret line="313" column="4" lean-forward="false" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="4" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-                <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
+                <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+                <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
               </folding>
             </state>
           </provider>
@@ -68,11 +68,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Board.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Board.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/model/Board.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="251" column="55" lean-forward="true" selection-start-line="251" selection-start-column="55" selection-end-line="251" selection-end-column="55" />
+            <state relative-caret-position="218">
+              <caret line="237" column="0" lean-forward="false" selection-start-line="237" selection-start-column="0" selection-end-line="237" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -171,6 +171,7 @@
       <find>solve</find>
       <find>toast</find>
       <find>solveforu</find>
+      <find>player</find>
     </findStrings>
   </component>
   <component name="GenerateSignedApkSettings">
@@ -1981,8 +1982,8 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/SettingsFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/model/Board.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -2279,7 +2280,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1522108278009" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1522112158064" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2327,7 +2328,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1522108278010" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1522112158064" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2489,7 +2490,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1522108278012" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1522112158065" />
       </method>
     </configuration>
     <list size="1">
@@ -2543,7 +2544,7 @@
       <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32792208" sideWeight="0.51492536" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -2690,8 +2691,8 @@
           <caret line="330" column="17" lean-forward="false" selection-start-line="330" selection-start-column="17" selection-end-line="330" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-            <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
+            <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+            <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -2748,8 +2749,8 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-            <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
+            <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+            <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -2806,8 +2807,8 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-            <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
+            <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+            <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -2864,8 +2865,8 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-            <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
+            <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+            <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -2922,8 +2923,8 @@
           <caret line="160" column="35" lean-forward="false" selection-start-line="160" selection-start-column="35" selection-end-line="160" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-            <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
+            <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+            <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
           </folding>
         </state>
       </provider>
@@ -3107,23 +3108,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/MainActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/model/Board.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="248" column="45" lean-forward="false" selection-start-line="248" selection-start-column="45" selection-end-line="248" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1522097692700" expanded="false" signature="11003:11014" ph=" { " />
-            <marker date="1522097692700" expanded="false" signature="11067:11073" ph=" }" />
-          </folding>
+        <state relative-caret-position="218">
+          <caret line="237" column="0" lean-forward="false" selection-start-line="237" selection-start-column="0" selection-end-line="237" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/model/Board.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/edu/utep/cs/cs4330/sudoku/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="251" column="55" lean-forward="true" selection-start-line="251" selection-start-column="55" selection-end-line="251" selection-end-column="55" />
-          <folding />
+        <state relative-caret-position="1797">
+          <caret line="313" column="4" lean-forward="false" selection-start-line="313" selection-start-column="4" selection-end-line="313" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <marker date="1522112158044" expanded="false" signature="11089:11100" ph=" { " />
+            <marker date="1522112158044" expanded="false" signature="11153:11159" ph=" }" />
+          </folding>
         </state>
       </provider>
     </entry>

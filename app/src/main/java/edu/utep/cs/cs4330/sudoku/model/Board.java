@@ -236,13 +236,14 @@ public class Board {
         }
     }*/
 
-    public void solveForUser() {
-        boolean solved = solveForUserHelper(player);
-        if (solved) {
-        }
+    //TODO: add return for checking if it solved the player board
+    public void solveForUser(boolean willSolve) {
+
+        boolean solved = solveForUserHelper(player, willSolve);
+
     }
 
-    public boolean solveForUserHelper(int[][] s) {
+    public boolean solveForUserHelper(int[][] s, boolean ws) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (s[i][j] != 0) {
@@ -251,7 +252,7 @@ public class Board {
                 for (int num = 1; num <= size; num++) {
                     if (!checkConflict(s, i, j, num)) {
                         s[i][j] = num;
-                        if (solveForUserHelper(s)) {
+                        if (solveForUserHelper(s, ws)) {
                             return true;
                         } else {
                             s[i][j] = 0;
@@ -261,13 +262,15 @@ public class Board {
                 return false;
             }
         }
-        // Assign player board to solved board
-        for(int i = 0; i < size; i++){
-            for(int j = 0; j < size; j++){
-                //Log.i("PrintSudoku", s[i][j] + ", ");
-                player[i][j] = s[i][j];
+        // Assign player board to solved board if solving
+/*        if (ws) {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    //Log.i("PrintSudoku", s[i][j] + ", ");
+                    player[i][j] = s[i][j];
+                }
             }
-        }
+        }*/
         return true;
     }
 

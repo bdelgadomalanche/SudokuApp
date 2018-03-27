@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //TODO: Fix toolbar placement in activity_settings.xml (probably)
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
 
@@ -167,10 +168,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Actions when Toolbar option is selected
         switch(item.getItemId()) {
             case R.id.action_settings:
-                //TODO: call settings activity
+                //TODO: fix call settings activity
                 toast("Settings clicked");
-                Intent settings = new Intent(this, SettingsActivity.class);
-                startActivity(settings);
+//                Intent settings = new Intent(this, SettingsActivity.class);
+//                startActivity(settings);
                 break;
 
         }
@@ -246,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        board.solveForUser();
+                        board.solveForUser(true);
                         boardView.postInvalidate();
                         for (int i = 0; i < numberIds.length; i++) {
                             View button = findViewById(numberIds[i]);
@@ -310,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         view.setLayoutParams(params);
     }
 
-
+    //TODO: Move Solve button functionality
     /** Spinner Callbacks */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
