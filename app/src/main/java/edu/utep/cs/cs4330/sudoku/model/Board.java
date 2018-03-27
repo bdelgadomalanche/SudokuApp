@@ -240,7 +240,6 @@ public class Board {
     //TODO: add return for checking if it solved the player board
     /** Solve the Sudoku puzzle for the user **/
     public boolean solveForUser(boolean willSolve) {
-        willSolve = true; //DEBUGGING PURPOSES
         int [][] tempBoard = new int[board.length][board[0].length];
         tempBoard = copyBoard(tempBoard, player);
         boolean solved = solveForUserHelper(tempBoard);
