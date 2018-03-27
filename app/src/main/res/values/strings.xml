@@ -3,6 +3,8 @@
     <string name="switch_title">Settings option</string>
     <string name="switch_summary">Turn this option on or off</string>
     <string name="settings_name">Settings</string>
+    <string name="solve_puzzle_name">Solve Puzzle</string>
+    <string name="check_puzzle_name">Check Puzzle</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

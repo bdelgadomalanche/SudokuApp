@@ -174,6 +174,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //                startActivity(settings);
                 break;
 
+            case R.id.action_solve_puzzle:
+                toast("Solve Puzzle clicked");
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("Do you give up?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                board.solveForUser(true);
+                                boardView.postInvalidate();
+                                for (int i = 0; i < numberIds.length; i++) {
+                                    View button = findViewById(numberIds[i]);
+                                    button.setEnabled(false);
+                                }
+                                toast("Here is the solution!");
+                            }
+                        })
+                        .setNegativeButton("No", null);
+                AlertDialog warning = builder.create();
+                warning.show();
+
+                break;
+            case R.id.action_check_puzzle:
+                toast("Check Puzzle clicked");
+                effects.play(place, 1, 1, 1, 0, 1);
+                if(board.solveForUser(false)){
+                    toast("Don't worry, you're on the right path!");
+                }
+                else{
+                    toast("Something must have gone wrong, you should go back and check.");
+                }
+                break;
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -311,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         view.setLayoutParams(params);
     }
 
-    //TODO: Move Solve button functionality
+    //TODO: remove Solve and check buttons
     /** Spinner Callbacks */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
