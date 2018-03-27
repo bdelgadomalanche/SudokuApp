@@ -259,20 +259,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
-
-
-
-    /** Check if the player's solution is still solvable */
-    public void isSolvable() {
-        effects.play(place, 1, 1, 1, 0, 1);
-        boolean isIt = board.solvable();
-        if(isIt){
-            toast("Don't worry, you're on the right path!");
-        }
-        else{
-            toast("Something must have gone wrong, you should go back and check.");
-        }
-    }
+    
 
     /**
      * Callback to be invoked when a square is selected in the board view.
