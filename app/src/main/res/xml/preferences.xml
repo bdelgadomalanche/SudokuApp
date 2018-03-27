@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <android.support.v7.preference.SwitchPreferenceCompat
-        android:defaultValue="true"
-        android:title="@string/switch_title"
-        android:key="example_switch"
-        android:summary="@string/switch_summary" />
-
     <ListPreference
         android:defaultValue="4"
         android:entries="@array/board_size_array"
@@ -22,4 +16,5 @@
         android:key="list_difficulty"
         android:summary="Choose the difficulty"
         android:title="Difficulty" />
+
 </PreferenceScreen>
