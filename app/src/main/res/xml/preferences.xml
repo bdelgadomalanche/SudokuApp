@@ -8,9 +8,9 @@
         android:summary="@string/switch_summary" />
 
     <ListPreference
-        android:defaultValue="1"
+        android:defaultValue="4"
         android:entries="@array/board_size_array"
-        android:entryValues="@array/board_size_array"
+        android:entryValues="@array/board_size_array_values"
         android:key="list_board_size"
         android:summary="Choose the size of the board"
         android:title="Board Size" />
@@ -18,7 +18,7 @@
     <ListPreference
         android:defaultValue="1"
         android:entries="@array/difficulty_array"
-        android:entryValues="@array/difficulty_array"
+        android:entryValues="@array/difficulty_array_values"
         android:key="list_difficulty"
         android:summary="Choose the difficulty"
         android:title="Difficulty" />

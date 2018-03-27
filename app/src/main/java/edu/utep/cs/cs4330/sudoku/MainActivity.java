@@ -2,11 +2,13 @@ package edu.utep.cs.cs4330.sudoku;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,9 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ import edu.utep.cs.cs4330.sudoku.model.Board;
  *
  * @author Yoonsik Cheon
  */
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     private Board board;
 
@@ -61,15 +60,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     /** Unmodifiable spaces */
     private ArrayList<int[]> hint;
-
-    /** Size variable */
-    int size = 9;
-
-    /** Size variable */
-    int difficulty = 1;
-
-    /** Spinners for selecting game difficulty and board size **/
-    Spinner spinner_difficult, spinner_board_size;
 
     /** Sounds for the game */
     SoundPool effects;
@@ -89,7 +79,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
 
-        board = new Board(size, difficulty);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        SharedPreferences sharedPref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean switchPref = sharedPref.getBoolean
+                (SettingsActivity.KEY_PREF_EXAMPLE_SWITCH, false);
+        Toast.makeText(this, switchPref.toString(), Toast.LENGTH_SHORT).show();
+
+        int sizePref = Integer.parseInt(sharedPref.getString("list_board_size", "4"));
+        int diffPref = Integer.parseInt(sharedPref.getString("list_difficulty", "1"));
+
+        board = new Board(sizePref, diffPref);
         boardView = findViewById(R.id.boardView);
         boardView.setBoard(board);
         boardView.addSelectionListener(this::squareSelected);
@@ -111,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 button.setEnabled(false);
             }
         }*/
+        board.size = sizePref;
+        board.difficulty = diffPref;
         hint = new ArrayList<>();
         for(int i = 0; i < board.size; i++){
             for(int j = 0; j < board.size; j++){
@@ -128,21 +130,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         place = effects.load(this, R.raw.boop, 1);
         restart = effects.load(this, R.raw.pageflip, 1);
 
-        spinner_difficult = (Spinner) findViewById(R.id.spinner_difficulty);
-        spinner_board_size = (Spinner) findViewById(R.id.spinner_size);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.difficulty_array, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,R.array.board_size_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Apply the adapter to the spinner
-        spinner_difficult.setAdapter(adapter);
-        spinner_difficult.setOnItemSelectedListener(this);
-        spinner_board_size.setAdapter(adapter2);
-        spinner_board_size.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -294,123 +282,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = buttonWidth;
         view.setLayoutParams(params);
-    }
-
-    //TODO: remove Solve and check buttons
-    //TODO: Remove Spinners and add Settings
-    /** Spinner Callbacks */
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        /* Use the following switch-statement if you want to keep all spinner actions/callbacks together */
-        /* The same can be done to the onNothingSelected callback */
-        switch(parent.getId()) {
-            case R.id.spinner_difficulty:
-                // 1 for difficulty spinner
-                difficulty = position + 1;
-                //board.difficulty = this.difficulty;
-                board = new Board(size, difficulty);
-                boardView = findViewById(R.id.boardView);
-                boardView.setBoard(board);
-                boardView.addSelectionListener(this::squareSelected);
-
-                numberButtons = new ArrayList<>(numberIds.length);
-                for (int i = 0; i < numberIds.length; i++) {
-                    if(i <= 9) {
-                        final int number = i; // 0 for delete button
-                        View button = findViewById(numberIds[i]);
-                        button.setOnClickListener(e -> numberClicked(number));
-                        numberButtons.add(button);
-                        setButtonWidth(button);
-                    }
-                }
-
-                if (board.size == 4){
-                    for (int i = 0; i < 5; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(true);
-                    }
-                    for (int i = 5; i < 10; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(false);
-                    }
-                }
-                else{
-                    for (int i = 0; i < numberIds.length; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(true);
-                    }
-                }
-
-                hint = new ArrayList<>();
-                for(int i = 0; i < board.size; i++){
-                    for(int j = 0; j < board.size; j++){
-                        if(board.player[i][j] > 0) {
-                            int[] temp = {i, j};
-                            hint.add(temp);
-                        }
-                    }
-                }
-                boardView.setHint(hint);
-                boardView.postInvalidate();
-                break;
-
-            case R.id.spinner_size:
-            //  Do stuff for board size spinner
-                size = (position * 5) + 4;
-                //board.size = this.size;
-                board = new Board(size, difficulty);
-                boardView = findViewById(R.id.boardView);
-                boardView.setBoard(board);
-                boardView.addSelectionListener(this::squareSelected);
-
-                numberButtons = new ArrayList<>(numberIds.length);
-                for (int i = 0; i < numberIds.length; i++) {
-                    if(i <= 9) {
-                        final int number = i; // 0 for delete button
-                        View button = findViewById(numberIds[i]);
-                        button.setOnClickListener(e -> numberClicked(number));
-                        numberButtons.add(button);
-                        setButtonWidth(button);
-                    }
-                }
-
-                if (board.size == 4){
-                    for (int i = 0; i < 5; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(true);
-                    }
-                    for (int i = 5; i < 10; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(false);
-                    }
-                }
-                else{
-                    for (int i = 0; i < numberIds.length; i++) {
-                        View button = findViewById(numberIds[i]);
-                        button.setEnabled(true);
-                    }
-                }
-
-                hint = new ArrayList<>();
-                for(int i = 0; i < board.size; i++){
-                    for(int j = 0; j < board.size; j++){
-                        if(board.player[i][j] > 0) {
-                            int[] temp = {i, j};
-                            hint.add(temp);
-                        }
-                    }
-                }
-                boardView.setHint(hint);
-                boardView.postInvalidate();
-                break;
-        }
-        //toast("Spinner1: position=" + position + ", size= " + size + "x" + size + ", d = " + difficulty);
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(this, "You selected nothing", Toast.LENGTH_LONG).show();
     }
 
 }

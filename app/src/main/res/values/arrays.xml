@@ -11,15 +11,15 @@
         <item>Hard</item>
     </string-array>
 
-    <integer-array name="board_size_array_values">
+    <string-array name="board_size_array_values">
         <item>4</item>
         <item>9</item>
-    </integer-array>-array>
+    </string-array>-array>
 
-    <integer-array name="difficulty_array_values">
+    <string-array name="difficulty_array_values">
         <item>1</item>
         <item>2</item>
         <item>3</item>
-    </integer-array>-array>
+    </string-array>-array>
 
 </resources>
