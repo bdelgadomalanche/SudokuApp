@@ -94,31 +94,32 @@ public class Board {
     /** Calls other helper methods to check conflicts with other sections in the puzzle for gameplay purposes */
     public boolean checkConflict(int[][] board, int x, int y, int number){
         if(checkHor(board, x, y, number) || checkVer(board, x, y, number) || checkArea(board, x, y, number) ){
+            Log.i("Check Sudoku", "True");
             return true;
         }
-
+        Log.i("Check Sudoku", "False");
         return false;
     }
 
     /** Checks conflicts with other horizontal numbers */
     private boolean checkHor(int[][] board, int x, int y, int number){
         for( int i = size - 1; i >= 0 ; i--){
-            if(number == board[i][y]){
+            if(board[x][i]==number)
+            {
                 return true;
             }
         }
-
         return false;
     }
 
     /** Checks conflicts with other vertical numbers */
     private boolean checkVer(int[][] board, int x, int y, int number){
         for( int i = size - 1; i >= 0 ; i--){
-            if(number == board[x][i]){
+            if(board[i][y]==number)
+            {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -227,35 +228,47 @@ public class Board {
     }
 
     /** Solve the Sudoku puzzle for the user */
-    public void solveForUser(){
+ /*   public void solveForUser(){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
                 player[i][j] = board[i][j];
             }
         }
+    }*/
+
+    public void solveForUser() {
+        boolean solved = solveForUserHelper(player);
+        if (solved) {
+        }
     }
 
-
-/*    public boolean solveForUser() {
+    public boolean solveForUserHelper(int[][] s) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (player[i][j] != 0) {
+                if (s[i][j] != 0) {
                     continue;
                 }
                 for (int num = 1; num <= size; num++) {
-                    if (checkConflict(player, i, j, num)) {
-                        player[i][j] = num;
-                        if (solvable()) {
+                    if (!checkConflict(s, i, j, num)) {
+                        s[i][j] = num;
+                        if (solveForUserHelper(s)) {
                             return true;
                         } else {
-                            player[i][j] = 0;
+                            s[i][j] = 0;
                         }
                     }
                 }
                 return false;
             }
         }
+        // Assign player board to solved board
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                //Log.i("PrintSudoku", s[i][j] + ", ");
+                player[i][j] = s[i][j];
+            }
+        }
         return true;
-    }*/
+    }
 
 }

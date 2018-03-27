@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_settings:
                 //TODO: call settings activity
                 toast("Settings clicked");
-                Intent settings = new Intent(this, SettingsFragment.class);
+                Intent settings = new Intent(this, SettingsActivity.class);
                 startActivity(settings);
                 break;
 
