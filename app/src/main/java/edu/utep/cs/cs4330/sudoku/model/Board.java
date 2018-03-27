@@ -203,11 +203,11 @@ public class Board {
         player[x][y] = 0;
     }
 
-    /** Checks for win by comparing all elements from the solution array to the player array */
+    /** Checks for win by checking that all spaces have been filled */
     public boolean puzzleSolved(){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
-                if(!(player[i][j] == board[i][j])) {
+                if(player[i][j] < 1) {
                     return false;
                 }
             }
