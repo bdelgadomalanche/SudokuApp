@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_settings:
                 //TODO: fix call settings activity
                 toast("Settings clicked");
-//                Intent settings = new Intent(this, SettingsActivity.class);
-//                startActivity(settings);
+                Intent settings = new Intent(this, SettingsActivity.class);
+                startActivity(settings);
                 break;
 
             case R.id.action_solve_puzzle:
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
-    
+
 
     /**
      * Callback to be invoked when a square is selected in the board view.
