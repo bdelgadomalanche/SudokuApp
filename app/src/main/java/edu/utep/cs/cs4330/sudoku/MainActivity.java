@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
 
             case R.id.action_solve_puzzle:
-                toast("Solve Puzzle clicked");
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Do you give up?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
@@ -185,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                 break;
             case R.id.action_check_puzzle:
-                toast("Check Puzzle clicked");
                 effects.play(place, 1, 1, 1, 0, 1);
                 if(board.solveForUser(false)){
                     toast("Don't worry, you're on the right path!");
