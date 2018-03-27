@@ -227,23 +227,33 @@ public class Board {
         return true;
     }
 
-    /** Solve the Sudoku puzzle for the user */
- /*   public void solveForUser(){
+
+    public int[][] copyBoard(int[][] copy, int[][] original){
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
-                player[i][j] = board[i][j];
+                copy[i][j] = original[i][j];
             }
         }
-    }*/
+        return copy;
+    }
 
     //TODO: add return for checking if it solved the player board
+    /** Solve the Sudoku puzzle for the user **/
     public void solveForUser(boolean willSolve) {
+        willSolve = true; //DEBUGGING PURPOSES
+        int [][] tempBoard = new int[board.length][board[0].length];
+        tempBoard = copyBoard(tempBoard, player);
+        boolean solved = solveForUserHelper(tempBoard);
 
-        boolean solved = solveForUserHelper(player, willSolve);
+        // Solve player board if player chose to solve & solution found
+        if(willSolve && solved) {
+            copyBoard(player, tempBoard);
+        }
+        //return solved
 
     }
 
-    public boolean solveForUserHelper(int[][] s, boolean ws) {
+    public boolean solveForUserHelper(int[][] s) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (s[i][j] != 0) {
@@ -252,7 +262,7 @@ public class Board {
                 for (int num = 1; num <= size; num++) {
                     if (!checkConflict(s, i, j, num)) {
                         s[i][j] = num;
-                        if (solveForUserHelper(s, ws)) {
+                        if (solveForUserHelper(s)) {
                             return true;
                         } else {
                             s[i][j] = 0;
@@ -262,15 +272,7 @@ public class Board {
                 return false;
             }
         }
-        // Assign player board to solved board if solving
-/*        if (ws) {
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    //Log.i("PrintSudoku", s[i][j] + ", ");
-                    player[i][j] = s[i][j];
-                }
-            }
-        }*/
+
         return true;
     }
 
