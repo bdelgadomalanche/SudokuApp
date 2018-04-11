@@ -1,5 +1,7 @@
 package edu.utep.cs.cs4330.sudoku;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -71,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
     /** Width of number buttons automatically calculated from the screen size. */
     private static int buttonWidth;
 
+    private BluetoothAdapter adapter;
+    private BluetoothDevice peer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,8 +130,7 @@ public class MainActivity extends AppCompatActivity {
         error = effects.load(this, R.raw.incorrect, 1);
         place = effects.load(this, R.raw.boop, 1);
         restart = effects.load(this, R.raw.pageflip, 1);
-
-
+        adapter = BluetoothAdapter.getDefaultAdapter();
     }
 
     @Override
@@ -241,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * Callback to be invoked when a square is selected in the board view.
      *
@@ -278,6 +281,37 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width = buttonWidth;
         view.setLayoutParams(params);
+    }
+
+
+    public void onServer(View v){
+        if(!adapter.isEnabled()){
+            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnOn, 0);
+            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
+            Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            startActivityForResult(getVisible, 0);
+        }
+    }
+
+    public void onClient(View v){
+        if(!adapter.isEnabled()){
+            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnOn, 0);
+            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
+            Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            startActivityForResult(getVisible, 0);
+        }
+    }
+
+
+    public void off(View v){
+        adapter.disable();
+        Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
     }
 
 }
