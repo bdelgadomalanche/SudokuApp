@@ -177,10 +177,46 @@ public class MainActivity extends AppCompatActivity {
             public void messageReceived(NetworkAdapter.MessageType type, int x, int y, int z, int[] others) {
                 switch (type.header){
                     case "join:":
-
+                        ArrayList<Integer> param = new ArrayList<Integer>();
+                        for (int i = 0; i < board.size; i++) {
+                            for (int j = 0; j < board.size; j++) {
+                                if (board.player[i][j] > 0) {
+                                    param.add(i);
+                                    param.add(j);
+                                    param.add(board.player[i][j]);
+                                    int[] temp = {i, j};
+                                    for (int[] space: hint) {
+                                        if(space[0] == temp[0] && space[1] == temp[1]){
+                                            Log.d("Hint", "Added");
+                                            param.add(1);
+                                        }
+                                    }
+                                    if(param.size() % 4 != 0){
+                                        param.add(0);
+                                    }
+                                }
+                            }
+                        }
+                        int[] ret = new int[param.size()];
+                        for (int i=0; i < ret.length; i++)
+                        {
+                            ret[i] = param.get(i).intValue();
+                        }
+                        connection.writeJoinAck(board.size, ret);
                         break;
                     case "join_ack:":
-
+                        board.size = x;
+                        board.player = new int[y][y];
+                        hint = new ArrayList<>();
+                        for(int i = 0; i < others.length; i = i + 4){
+                            board.player[others[i]][others[i + 1]] = others[i + 2];
+                            if(others[i + 3] == 1){
+                                int[] temp = {others[i], others[i + 1]};
+                                hint.add(temp);
+                            }
+                        }
+                        boardView.setHint(hint);
+                        boardView.postInvalidate();
                         break;
                     case "new:":
 
@@ -316,6 +352,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 board.removeFromPlayer(selected[0], selected[1]);
+                if(connection != null){
+                    connection.writeFill(selected[0], selected[1], n);
+                }
                 boardView.postInvalidate();
                 toast("Item removed");
             }
@@ -397,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
         // Keep listening until exception occurs or a socket is returned.
         while (true) {
             try {
-                socket = server.accept();
+                socket = server.accept(10000);
             } catch (IOException e) {
                 Log.e("Not accepting", "Socket's accept() method failed", e);
                 break;
@@ -489,6 +528,7 @@ public class MainActivity extends AppCompatActivity {
             connection = new NetworkAdapter(client, logger);
             connection.setMessageListener(heyListen);
             connection.receiveMessagesAsync();
+            connection.writeJoin();
         }
     }
 
