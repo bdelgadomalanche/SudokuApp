@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                                     int[] temp = {i, j};
                                     for (int[] space: hint) {
                                         if(space[0] == temp[0] && space[1] == temp[1]){
-                                            Log.d("Hint", "Added");
                                             param.add(1);
                                         }
                                     }
@@ -203,9 +202,14 @@ public class MainActivity extends AppCompatActivity {
                             ret[i] = param.get(i).intValue();
                         }
                         connection.writeJoinAck(board.size, ret);
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                toast("Peer Joined");
+                            }
+                        });
                         break;
                     case "join_ack:":
-                        board.size = x;
+                        board.size = y;
                         board.player = new int[y][y];
                         hint = new ArrayList<>();
                         for(int i = 0; i < others.length; i = i + 4){
@@ -215,23 +219,84 @@ public class MainActivity extends AppCompatActivity {
                                 hint.add(temp);
                             }
                         }
+                        boardView = findViewById(R.id.boardView);
+                        boardView.setBoard(board);
                         boardView.setHint(hint);
                         boardView.postInvalidate();
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                toast("Peer Joined");
+                            }
+                        });
                         break;
                     case "new:":
-
+                        boolean[] nGame = {false};
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setMessage("Do you want to share a new board?");
+                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        nGame[0] = true;
+                                    }
+                                }).setNegativeButton("No", null);
+                                AlertDialog warning = builder.create();
+                                warning.show();
+                            }
+                        });
+                        Log.d("New", String.valueOf(nGame[0]));
+                        if(nGame[0]){
+                            board.size = x;
+                            board.player = new int[x][x];
+                            hint = new ArrayList<>();
+                            for (int i = 0; i < others.length; i = i + 4) {
+                                board.player[others[i]][others[i + 1]] = others[i + 2];
+                                if (others[i + 3] == 1) {
+                                    int[] temp = {others[i], others[i + 1]};
+                                    hint.add(temp);
+                                }
+                            }
+                            boardView = findViewById(R.id.boardView);
+                            boardView.setBoard(board);
+                            boardView.setHint(hint);
+                            boardView.postInvalidate();
+                            connection.writeNewAck(true);
+                        }else {
+                            connection.writeNewAck(false);
+                        }
                         break;
                     case "new_ack:":
-
+                        if(x == 1){
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    toast("Peer accepted");
+                                }
+                            });
+                        }else {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    toast("Peer rejected");
+                                }
+                            });
+                        }
                         break;
                     case "fill:":
-                        Log.d("Progress", "Progress");
                         board.player[x][y] = z;
                         connection.writeFillAck(x, y, z);
                         boardView.postInvalidate();
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                toast(String.format("Peer inserted %d at %d, %d", z, x, y));
+                            }
+                        });
                         break;
                     case "fill_ack:":
-                        Log.d("Confirmation", "Indeed");
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                toast(String.format("Peer received successfully"));
+                            }
+                        });
                         break;
                     case "quit:":
 
@@ -305,6 +370,31 @@ public class MainActivity extends AppCompatActivity {
                         effects.play(restart, 1, 1, 1, 0, 1);
                         recreate();
                         toast("New Game Started! Good Luck!");
+                        ArrayList<Integer> param = new ArrayList<Integer>();
+                        for (int i = 0; i < board.size; i++) {
+                            for (int j = 0; j < board.size; j++) {
+                                if (board.player[i][j] > 0) {
+                                    param.add(i);
+                                    param.add(j);
+                                    param.add(board.player[i][j]);
+                                    int[] temp = {i, j};
+                                    for (int[] space: hint) {
+                                        if(space[0] == temp[0] && space[1] == temp[1]){
+                                            param.add(1);
+                                        }
+                                    }
+                                    if(param.size() % 4 != 0){
+                                        param.add(0);
+                                    }
+                                }
+                            }
+                        }
+                        int[] ret = new int[param.size()];
+                        for (int i=0; i < ret.length; i++)
+                        {
+                            ret[i] = param.get(i).intValue();
+                        }
+                        connection.writeNew(board.size, ret);
                     }
                 })
                 .setNegativeButton("No", null);
@@ -497,7 +587,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         client = tmp;
-        Log.d("socket", peer.toString());
     }
 
     public void runClient() {
@@ -564,7 +653,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 peer = listDevices.get(temp);
-                Log.d("devices", peer.getAddress());
                 ConnectThread(peer);
                 runClient();
             }
