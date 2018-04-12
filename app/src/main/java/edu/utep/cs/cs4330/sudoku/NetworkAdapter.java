@@ -1,6 +1,8 @@
 package edu.utep.cs.cs4330.sudoku;
 
 import android.bluetooth.BluetoothSocket;
+import android.nfc.Tag;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * An abstraction of a socket (TCP/IP and Bluetooth)
@@ -211,7 +215,7 @@ public class NetworkAdapter {
         UNKNOWN (null);
 
         /** Message header. */
-        private final String header;
+        public final String header;
 
         MessageType(String header) {
             this.header = header;

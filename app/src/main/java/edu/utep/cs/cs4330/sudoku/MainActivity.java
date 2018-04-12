@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private static int buttonWidth;
 
+    //private NetworkUtil utilities;
+
     private BluetoothAdapter adapter;
     private BluetoothDevice peer;
     private NetworkAdapter netAd;
@@ -104,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
     private PrintStream logger;
     private OutputStream outSt;
     public static final java.util.UUID MY_UUID = java.util.UUID.fromString("1a9a8d20-3db7-11e8-b467-0ed5f89f718b");
+    private NetworkAdapter connection;
+    private NetworkAdapter.MessageListener heyListen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         place = effects.load(this, R.raw.boop, 1);
         restart = effects.load(this, R.raw.pageflip, 1);
 
+        //utilities = new NetworkUtil();
 
         listDevices = new ArrayList<BluetoothDevice>();
         nameDevices = new ArrayList<String>();
@@ -167,6 +172,29 @@ public class MainActivity extends AppCompatActivity {
         adapter = BluetoothAdapter.getDefaultAdapter();
         outSt = new ByteArrayOutputStream(1024);
         logger = new PrintStream(outSt);
+        heyListen = new NetworkAdapter.MessageListener() {
+            @Override
+            public void messageReceived(NetworkAdapter.MessageType type, int x, int y, int z, int[] others) {
+                switch (type.header){
+                    case "join:":
+                        break;
+                    case "join_ack:":
+                        break;
+                    case "new:":
+                        break;
+                    case "new_ack:":
+                        break;
+                    case "fill:":
+                        Log.d("Progress", "Progress");
+                        board.player[x][y] = z;
+                        break;
+                    case "fill_ack:":
+                        break;
+                    case "quit:":
+                        break;
+                }
+            }
+        };
     }
 
     @Override
@@ -255,6 +283,9 @@ public class MainActivity extends AppCompatActivity {
                 if (!board.checkConflict(board.player, selected[0], selected[1], n)) {
                     board.player[selected[0]][selected[1]] = n;
                     boardView.postInvalidate();
+                    if(connection != null){
+                        connection.writeFill(selected[0], selected[1], n);
+                    }
                     if (board.puzzleSolved()) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setMessage("Congratulations!!! You Won! Would you like to play again?")
@@ -368,7 +399,9 @@ public class MainActivity extends AppCompatActivity {
                 // A connection was accepted. Perform work associated with
                 // the connection in a separate thread.
                 toast("Connected");
-                NetworkAdapter connection = new NetworkAdapter(socket, logger);
+                connection = new NetworkAdapter(socket, logger);
+                connection.setMessageListener(heyListen);
+                connection.receiveMessagesAsync();
                 server.close();
                 break;
             }
@@ -378,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void serverClicked(View view) throws IOException {
+    public void serverClickedApp(View view) throws IOException {
         onServer(view);
     }
 
@@ -445,7 +478,9 @@ public class MainActivity extends AppCompatActivity {
         if(client == null){
             toast("Null client");
         }else {
-            NetworkAdapter connection = new NetworkAdapter(client, logger);
+            connection = new NetworkAdapter(client, logger);
+            connection.setMessageListener(heyListen);
+            connection.receiveMessagesAsync();
         }
     }
 
@@ -454,7 +489,8 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
     }
 
-    public void clientClicked(View view) {
+    public void clientClickedApp(View view) {
+        //utilities.clientClicked(view);
         onClient(view);
         // setup the alert builder
         if(listDevices.isEmpty()){
@@ -497,6 +533,5 @@ public class MainActivity extends AppCompatActivity {
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
         dialog.show();
-
     }
 }
