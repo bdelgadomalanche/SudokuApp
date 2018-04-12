@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private List<BluetoothDevice> listDevices;
     private ArrayList<String> nameDevices;
     private int temp;
+    private PrintStream logger;
 
     public static final java.util.UUID MY_UUID = java.util.UUID.fromString("1a9a8d20-3db7-11e8-b467-0ed5f89f718b");
 
@@ -319,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
         view.setLayoutParams(params);
     }
 
+    //Server Functions
     public void onServer(View v) throws IOException {
         if (!adapter.isEnabled()) {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -328,63 +331,52 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
             Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             startActivityForResult(getVisible, 0);
-
-            /*BluetoothServerSocket tmp = null;
-            try {
-                // MY_UUID is the app's UUID string, also used by the client code.
-                tmp = adapter.listenUsingRfcommWithServiceRecord("Server", MY_UUID);
-            } catch (IOException e) {
-                Log.e("Listen", "Socket's listen() method failed", e);
-            }
-            server = tmp;
-            BluetoothSocket socket = null;
-            // Keep listening until exception occurs or a socket is returned.
-            while (true) {
-                try {
-                    socket = server.accept();
-                } catch (IOException e) {
-                    Log.e("Accept", "Socket's accept() method failed", e);
-                    break;
-                }
-
-                if (socket != null) {
-                    // A connection was accepted. Perform work associated with
-                    // the connection in a separate thread.
-                    toast("Successful");
-                    server.close();
-                    break;
-                }
-            }*/
+            AcceptThread();
+            runServer();
         }
     }
 
-    /*
-    public void onClient(View v){
-        if(!adapter.isEnabled()){
-            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(turnOn, 0);
-            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
-            Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            startActivityForResult(getVisible, 0);
-
-            BluetoothSocket tmp = null;
-            peer = device;
-
-            try {
-                // Get a BluetoothSocket to connect with the given BluetoothDevice.
-                // MY_UUID is the app's UUID string, also used in the server code.
-                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
-            } catch (IOException e) {
-                Log.e(TAG, "Socket's create() method failed", e);
-            }
-            mmSocket = tmp;
+    public void AcceptThread() {
+        // Use a temporary object that is later assigned to mmServerSocket
+        // because mmServerSocket is final.
+        BluetoothServerSocket tmp = null;
+        try {
+            // MY_UUID is the app's UUID string, also used by the client code.
+            tmp = adapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+        } catch (IOException e) {
+            Log.e("Not listening", "Socket's listen() method failed", e);
         }
-    }*/
+        server = tmp;
+    }
 
-    //------
-    public void on(View v){
+    public void runServer() throws IOException {
+        BluetoothSocket socket = null;
+        // Keep listening until exception occurs or a socket is returned.
+        while (true) {
+            try {
+                socket = server.accept();
+            } catch (IOException e) {
+                Log.e("Not accepting", "Socket's accept() method failed", e);
+                break;
+            }
+
+            if (socket != null) {
+                // A connection was accepted. Perform work associated with
+                // the connection in a separate thread.
+                toast("Connected");
+                NetworkAdapter connection = new NetworkAdapter(client, logger);
+                server.close();
+                break;
+            }
+        }
+    }
+
+    public void serverClicked(View view) throws IOException {
+        onServer(view);
+    }
+
+    //Client Functions
+    public void onClient(View v){
         if (!adapter.isEnabled()) {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnOn, 0);
@@ -409,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void ConnectThread(BluetoothDevice device) {
         BluetoothSocket tmp = null;
+        peer = device;
         try {
             tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
         }
@@ -420,18 +413,43 @@ public class MainActivity extends AppCompatActivity {
         Log.d("socket", peer.toString());
     }
 
+    public void runClient() {
+        // Cancel discovery because it otherwise slows down the connection.
+        adapter.cancelDiscovery();
+
+        try {
+            // Connect to the remote device through the socket. This call blocks
+            // until it succeeds or throws an exception.
+            client.connect();
+        } catch (IOException connectException) {
+            // Unable to connect; close the socket and return.
+            try {
+                client.close();
+            } catch (IOException closeException) {
+                Log.e("Close socket", "Could not close the client socket", closeException);
+            }
+            return;
+        }
+
+        // The connection attempt succeeded. Perform work associated with
+        // the connection in a separate thread.
+
+        toast("Connected");
+        NetworkAdapter connection = new NetworkAdapter(client, logger);
+    }
+
     public void off(View v){
         adapter.disable();
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
     }
 
-    public void bluetoothClicked(View view) {
-        on(view);
+    public void clientClicked(View view) {
+        onClient(view);
         // setup the alert builder
         if(listDevices.isEmpty()){
             Intent turnOn = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
             startActivityForResult(turnOn, 0);
-            on(view);
+            onClient(view);
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -453,6 +471,7 @@ public class MainActivity extends AppCompatActivity {
                 peer = listDevices.get(temp);
                 Log.d("devices", peer.getAddress());
                 ConnectThread(peer);
+                runClient();
             }
         });
         builder.setNeutralButton("PAIR", new DialogInterface.OnClickListener() {
