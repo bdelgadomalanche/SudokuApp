@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     private int temp;
     private PrintStream logger;
     private OutputStream outSt;
-    public static final java.util.UUID MY_UUID = java.util.UUID.fromString("1a9a8d20-3db7-11e8-b467-0ed5f89f718b");
+    public static final UUID MY_UUID = UUID.fromString("1a9a8d20-3db7-11e8-b467-0ed5f89f718b");
     private NetworkAdapter connection;
     private NetworkAdapter.MessageListener heyListen;
 
@@ -177,20 +177,28 @@ public class MainActivity extends AppCompatActivity {
             public void messageReceived(NetworkAdapter.MessageType type, int x, int y, int z, int[] others) {
                 switch (type.header){
                     case "join:":
+
                         break;
                     case "join_ack:":
+
                         break;
                     case "new:":
+
                         break;
                     case "new_ack:":
+
                         break;
                     case "fill:":
                         Log.d("Progress", "Progress");
                         board.player[x][y] = z;
+                        connection.writeFillAck(x, y, z);
+                        boardView.postInvalidate();
                         break;
                     case "fill_ack:":
+                        Log.d("Confirmation", "Indeed");
                         break;
                     case "quit:":
+
                         break;
                 }
             }
