@@ -2,6 +2,8 @@ package edu.utep.cs.cs4330.sudoku;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,10 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import edu.utep.cs.cs4330.sudoku.model.Board;
+
+import static android.provider.Settings.NameValueTable.NAME;
 
 /**
  * HW1 template for developing an app to play simple Sudoku games.
@@ -50,31 +57,49 @@ public class MainActivity extends AppCompatActivity {
 
     private BoardView boardView;
 
-    /** All the number buttons. */
+    /**
+     * All the number buttons.
+     */
     private List<View> numberButtons;
-    private static final int[] numberIds = new int[] {
+    private static final int[] numberIds = new int[]{
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4,
             R.id.n5, R.id.n6, R.id.n7, R.id.n8, R.id.n9,
     };
 
-    /** Array to remember where to insert number */
+    /**
+     * Array to remember where to insert number
+     */
     private int[] selected = {-1, -1};
 
-    /** Unmodifiable spaces */
+    /**
+     * Unmodifiable spaces
+     */
     private ArrayList<int[]> hint;
 
-    /** Sounds for the game */
+    /**
+     * Sounds for the game
+     */
     SoundPool effects;
     int win;
     int error;
     int place;
     int restart;
 
-    /** Width of number buttons automatically calculated from the screen size. */
+    /**
+     * Width of number buttons automatically calculated from the screen size.
+     */
     private static int buttonWidth;
 
     private BluetoothAdapter adapter;
     private BluetoothDevice peer;
+    private NetworkAdapter netAd;
+    private BluetoothServerSocket server;
+    private BluetoothSocket client;
+    private List<BluetoothDevice> listDevices;
+    private ArrayList<String> nameDevices;
+    private int temp;
+
+    public static final java.util.UUID MY_UUID = java.util.UUID.fromString("1a9a8d20-3db7-11e8-b467-0ed5f89f718b");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         numberButtons = new ArrayList<>(numberIds.length);
         for (int i = 0; i < numberIds.length; i++) {
-            if(i <= 9) {
+            if (i <= 9) {
                 final int number = i; // 0 for delete button
                 View button = findViewById(numberIds[i]);
                 button.setOnClickListener(e -> numberClicked(number));
@@ -107,17 +132,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**if (board.size == 4){
-            for (int i = 5; i < numberIds.length; i++) {
-                View button = findViewById(numberIds[i]);
-                button.setEnabled(false);
-            }
-        }*/
+         for (int i = 5; i < numberIds.length; i++) {
+         View button = findViewById(numberIds[i]);
+         button.setEnabled(false);
+         }
+         }*/
         board.size = sizePref;
         board.difficulty = diffPref;
         hint = new ArrayList<>();
-        for(int i = 0; i < board.size; i++){
-            for(int j = 0; j < board.size; j++){
-                if(board.player[i][j] > 0) {
+        for (int i = 0; i < board.size; i++) {
+            for (int j = 0; j < board.size; j++) {
+                if (board.player[i][j] > 0) {
                     int[] temp = {i, j};
                     hint.add(temp);
                 }
@@ -130,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
         error = effects.load(this, R.raw.incorrect, 1);
         place = effects.load(this, R.raw.boop, 1);
         restart = effects.load(this, R.raw.pageflip, 1);
+
+
+        listDevices = new ArrayList<BluetoothDevice>();
+        nameDevices = new ArrayList<String>();
+        peer = null;
         adapter = BluetoothAdapter.getDefaultAdapter();
     }
 
@@ -143,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Actions when Toolbar option is selected
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 //TODO: fix call settings activity
                 Intent settings = new Intent(this, SettingsActivity.class);
@@ -153,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_solve_puzzle:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage("Do you give up?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 board.solveForUser(true);
@@ -172,10 +202,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_check_puzzle:
                 effects.play(place, 1, 1, 1, 0, 1);
-                if(board.solveForUser(false)){
+                if (board.solveForUser(false)) {
                     toast("Don't worry, you're on the right path!");
-                }
-                else{
+                } else {
                     toast("Something must have gone wrong, you should go back and check.");
                 }
                 break;
@@ -185,12 +214,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Callback to be invoked when the new button is tapped. */
+    /**
+     * Callback to be invoked when the new button is tapped.
+     */
     public void newClicked(View view) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Are you sure you want to start a new game?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         effects.play(restart, 1, 1, 1, 0, 1);
@@ -203,7 +234,8 @@ public class MainActivity extends AppCompatActivity {
         warning.show();
     }
 
-    /** Callback to be invoked when a number button is tapped.
+    /**
+     * Callback to be invoked when a number button is tapped.
      *
      * @param n Number represented by the tapped button
      *          or 0 for the delete button.
@@ -211,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
     public void numberClicked(int n) {
         // WRITE YOUR CODE HERE ...
         //
-        if(selected[0] >= 0 && selected[1] >= 0) {
+        if (selected[0] >= 0 && selected[1] >= 0) {
             effects.play(place, 1, 1, 1, 0, 1);
             if (n > 0) {
                 if (!board.checkConflict(board.player, selected[0], selected[1], n)) {
@@ -254,8 +286,8 @@ public class MainActivity extends AppCompatActivity {
     private void squareSelected(int x, int y) {
         // WRITE YOUR CODE HERE ...
         //
-        for (int [] i : hint) {
-            if(i[1] == x && i[0] == y){
+        for (int[] i : hint) {
+            if (i[1] == x && i[0] == y) {
                 toast(String.format("Can't select this space!"));
                 effects.play(error, 1, 1, 1, 0, 1);
                 return;
@@ -266,12 +298,16 @@ public class MainActivity extends AppCompatActivity {
         selected[1] = x;
     }
 
-    /** Show a toast message. */
+    /**
+     * Show a toast message.
+     */
     private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    /** Set the width of the given button calculated from the screen size. */
+    /**
+     * Set the width of the given button calculated from the screen size.
+     */
     private void setButtonWidth(View view) {
         if (buttonWidth == 0) {
             final int distance = 2;
@@ -283,19 +319,46 @@ public class MainActivity extends AppCompatActivity {
         view.setLayoutParams(params);
     }
 
-
-    public void onServer(View v){
-        if(!adapter.isEnabled()){
+    public void onServer(View v) throws IOException {
+        if (!adapter.isEnabled()) {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnOn, 0);
-            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
-        }else {
+            Toast.makeText(getApplicationContext(), "Turned on", Toast.LENGTH_LONG).show();
+        } else {
             Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
             Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             startActivityForResult(getVisible, 0);
+
+            /*BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code.
+                tmp = adapter.listenUsingRfcommWithServiceRecord("Server", MY_UUID);
+            } catch (IOException e) {
+                Log.e("Listen", "Socket's listen() method failed", e);
+            }
+            server = tmp;
+            BluetoothSocket socket = null;
+            // Keep listening until exception occurs or a socket is returned.
+            while (true) {
+                try {
+                    socket = server.accept();
+                } catch (IOException e) {
+                    Log.e("Accept", "Socket's accept() method failed", e);
+                    break;
+                }
+
+                if (socket != null) {
+                    // A connection was accepted. Perform work associated with
+                    // the connection in a separate thread.
+                    toast("Successful");
+                    server.close();
+                    break;
+                }
+            }*/
         }
     }
 
+    /*
     public void onClient(View v){
         if(!adapter.isEnabled()){
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -305,13 +368,105 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
             Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             startActivityForResult(getVisible, 0);
+
+            BluetoothSocket tmp = null;
+            peer = device;
+
+            try {
+                // Get a BluetoothSocket to connect with the given BluetoothDevice.
+                // MY_UUID is the app's UUID string, also used in the server code.
+                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+            } catch (IOException e) {
+                Log.e(TAG, "Socket's create() method failed", e);
+            }
+            mmSocket = tmp;
+        }
+    }*/
+
+    //------
+    public void on(View v){
+        if (!adapter.isEnabled()) {
+            Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(turnOn, 0);
+            listDevices = new ArrayList<BluetoothDevice>();
+            nameDevices = new ArrayList<String>();
+            for (BluetoothDevice b : adapter.getBondedDevices()) {
+               listDevices.add(b);
+               nameDevices.add(b.getName());
+            }
+            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Already on", Toast.LENGTH_LONG).show();
+            listDevices = new ArrayList<BluetoothDevice>();
+            nameDevices = new ArrayList<String>();
+            for (BluetoothDevice b : adapter.getBondedDevices()) {
+               listDevices.add(b);
+                nameDevices.add(b.getName());
+            }
         }
     }
 
+
+    public void ConnectThread(BluetoothDevice device) {
+        BluetoothSocket tmp = null;
+        try {
+            tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+        }
+        catch (IOException e) {
+            Log.e("error_socket", "Socket: " + tmp.toString() + " create() failed", e);
+        }
+
+        client = tmp;
+        Log.d("socket", peer.toString());
+    }
 
     public void off(View v){
         adapter.disable();
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
     }
 
+    public void bluetoothClicked(View view) {
+        on(view);
+        // setup the alert builder
+        if(listDevices.isEmpty()){
+            Intent turnOn = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+            startActivityForResult(turnOn, 0);
+            on(view);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Paired Devices");
+
+        String[] arrDevices = nameDevices.toArray(new String[nameDevices.size()]);
+        int checkedItem = 0;
+        builder.setSingleChoiceItems(arrDevices, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                toast(arrDevices[which]);
+                temp = which;
+            }
+        });
+
+        builder.setPositiveButton("CONNECT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                peer = listDevices.get(temp);
+                Log.d("devices", peer.getAddress());
+                ConnectThread(peer);
+            }
+        });
+        builder.setNeutralButton("PAIR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent turnOn = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                startActivityForResult(turnOn, 0);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
 }
