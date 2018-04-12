@@ -22,7 +22,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> nameDevices;
     private int temp;
     private PrintStream logger;
-
+    private OutputStream outSt;
     public static final java.util.UUID MY_UUID = java.util.UUID.fromString("1a9a8d20-3db7-11e8-b467-0ed5f89f718b");
 
     @Override
@@ -163,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
         nameDevices = new ArrayList<String>();
         peer = null;
         adapter = BluetoothAdapter.getDefaultAdapter();
+        outSt = new ByteArrayOutputStream(1024);
+        logger = new PrintStream(outSt);
     }
 
     @Override
@@ -303,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Show a toast message.
      */
-    private void toast(String msg) {
+    public void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
@@ -364,9 +368,12 @@ public class MainActivity extends AppCompatActivity {
                 // A connection was accepted. Perform work associated with
                 // the connection in a separate thread.
                 toast("Connected");
-                NetworkAdapter connection = new NetworkAdapter(client, logger);
+                NetworkAdapter connection = new NetworkAdapter(socket, logger);
                 server.close();
                 break;
+            }
+            else {
+                toast("Null socket");
             }
         }
     }
@@ -435,7 +442,11 @@ public class MainActivity extends AppCompatActivity {
         // the connection in a separate thread.
 
         toast("Connected");
-        NetworkAdapter connection = new NetworkAdapter(client, logger);
+        if(client == null){
+            toast("Null client");
+        }else {
+            NetworkAdapter connection = new NetworkAdapter(client, logger);
+        }
     }
 
     public void off(View v){
